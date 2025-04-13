@@ -22,4 +22,22 @@ export default defineConfig({
             'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
         },
     },
+    server: {
+        cors: {
+            origin: ['http://localhost:8000', 'http://127.0.0.1:8000', 'http://localhost:5173', 'http://192.168.18.8:5173'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+            credentials: true,
+            exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+            maxAge: 86400,
+        },
+        hmr: {
+            host: 'localhost',
+            protocol: 'ws',
+            clientPort: 5173,
+            port: 5173,
+        },
+        host: true,
+        port: 5173,
+    },
 });

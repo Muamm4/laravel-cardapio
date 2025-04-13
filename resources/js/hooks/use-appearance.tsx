@@ -23,6 +23,19 @@ const applyTheme = (appearance: Appearance) => {
     const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
 
     document.documentElement.classList.toggle('dark', isDark);
+
+    // Definir cores RGB em vez de OKLCH
+    if (isDark) {
+        document.documentElement.style.setProperty('--background', '#161615');
+        document.documentElement.style.setProperty('--foreground', '#EDEDEC');
+        document.documentElement.style.setProperty('--card', '#161615');
+        document.documentElement.style.setProperty('--card-foreground', '#EDEDEC');
+    } else {
+        document.documentElement.style.setProperty('--background', '#FDFDFC');
+        document.documentElement.style.setProperty('--foreground', '#1B1B18');
+        document.documentElement.style.setProperty('--card', '#FFFFFF');
+        document.documentElement.style.setProperty('--card-foreground', '#1B1B18');
+    }
 };
 
 const mediaQuery = () => {
