@@ -1,0 +1,214 @@
+import { type BreadcrumbItem, type Order, type CartItem } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
+import { ArrowLeft, Check, X, MessageSquare, Package, User, Phone, Clock, DollarSign } from 'lucide-react';
+
+import AppLayout from '@/layouts/app-layout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface OrderShowProps {
+    order: Order;
+}
+
+function formatPrice(price: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(price);
+}
+
+function getStatusBadgeVariant(status: Order['status']): 'default' | 'secondary' | 'destructive' {
+    switch (status) {
+        case 'pending':
+            return 'secondary';
+        case 'accepted':
+            return 'default';
+        case 'rejected':
+            return 'destructive';
+        default:
+            return 'secondary';
+    }
+}
+
+function getStatusLabel(status: Order['status']): string {
+    switch (status) {
+        case 'pending':
+            return 'Pendente';
+        case 'accepted':
+            return 'Aceito';
+        case 'rejected':
+            return 'Recusado';
+        default:
+            return status;
+    }
+}
+
+export default function OrderShow({ order }: OrderShowProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'Dashboard', href: '/admin' },
+        { title: 'Pedidos', href: route('admin.orders.index') },
+        { title: `Pedido #${order.id}`, href: '#' },
+    ];
+
+    const updateStatus = (status: 'accepted' | 'rejected') => {
+        router.patch(route('admin.orders.update-status', order.id), {
+            status,
+        });
+    };
+
+    const formatPhoneForWhatsApp = (phone: string) => {
+        const cleaned = phone.replace(/\D/g, '');
+        return cleaned.startsWith('55') ? cleaned : `55${cleaned}`;
+    };
+
+    const formatItemName = (item: CartItem): string => {
+        return (item as Record<string, string>)['product_name'] || item.name;
+    };
+
+    const getItemUnitPrice = (item: CartItem): number => {
+        return (item as Record<string, number>)['unit_price'] || item.price;
+    };
+
+    const getItemSubtotal = (item: CartItem): number => {
+        return (item as Record<string, number>)['subtotal'] || item.price * item.quantity;
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title={`Pedido #${order.id}`} />
+            <div>
+                <div className="flex items-center gap-4 mb-6">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href={route('admin.orders.index')}>
+                            <ArrowLeft className="size-5" />
+                        </Link>
+                    </Button>
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Pedido #{order.id}</h1>
+                        <p className="text-muted-foreground flex items-center gap-1">
+                            <Clock className="size-3" />
+                            {new Date(order.created_at).toLocaleString('pt-BR')}
+                        </p>
+                    </div>
+                    <div className="ml-auto">
+                        <Badge variant={getStatusBadgeVariant(order.status)} className="px-3 py-1 text-sm">
+                            {getStatusLabel(order.status)}
+                        </Badge>
+                    </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-3 mb-6">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                            <User className="size-5 text-muted-foreground" />
+                            <CardTitle className="text-base">Cliente</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="font-medium">{order.customer_name}</p>
+                            <a
+                                href={`https://wa.me/${formatPhoneForWhatsApp(order.customer_phone)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-1 inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                            >
+                                <MessageSquare className="size-3" />
+                                {order.customer_phone}
+                            </a>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                            <Package className="size-5 text-muted-foreground" />
+                            <CardTitle className="text-base">Itens</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-2xl font-bold">{order.items.length}</p>
+                            <p className="text-sm text-muted-foreground">produtos no pedido</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                            <DollarSign className="size-5 text-muted-foreground" />
+                            <CardTitle className="text-base">Total</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-2xl font-bold text-primary">{formatPrice(order.total)}</p>
+                            <p className="text-sm text-muted-foreground">valor total</p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-base">Itens do Pedido</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead className="border-b bg-muted/50">
+                                    <tr>
+                                        <th className="p-3 text-left font-medium">Produto</th>
+                                        <th className="p-3 text-center font-medium">Qtd</th>
+                                        <th className="p-3 text-right font-medium">Preço Unit.</th>
+                                        <th className="p-3 text-right font-medium">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {order.items.map((item: CartItem) => (
+                                        <tr key={item.id} className="border-b last:border-0">
+                                            <td className="p-3 font-medium">{formatItemName(item)}</td>
+                                            <td className="p-3 text-center">{item.quantity}</td>
+                                            <td className="p-3 text-right">{formatPrice(getItemUnitPrice(item))}</td>
+                                            <td className="p-3 text-right font-medium">
+                                                {formatPrice(getItemSubtotal(item))}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan={3} className="p-3 text-right font-bold">
+                                            Total:
+                                        </td>
+                                        <td className="p-3 text-right font-bold">
+                                            {formatPrice(order.total)}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {order.status === 'pending' && (
+                    <div className="flex items-center gap-4">
+                        <Button
+                            onClick={() => updateStatus('accepted')}
+                            className="gap-2 bg-green-600 hover:bg-green-700"
+                        >
+                            <Check className="size-4" />
+                            Aceitar Pedido
+                        </Button>
+                        <Button
+                            onClick={() => updateStatus('rejected')}
+                            variant="destructive"
+                            className="gap-2"
+                        >
+                            <X className="size-4" />
+                            Recusar Pedido
+                        </Button>
+                    </div>
+                )}
+
+                {order.whatsapp_sent && order.status === 'accepted' && (
+                    <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+                        Pedido aceito — notificação enviada para o WhatsApp do cliente.
+                    </div>
+                )}
+            </div>
+        </AppLayout>
+    );
+}
