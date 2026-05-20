@@ -19,6 +19,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Serializable Classes
+    |--------------------------------------------------------------------------
+    |
+    | When unserializing cached values, only the classes listed here will be
+    | allowed. Set to false to allow all classes (not recommended).
+    |
+    */
+
+    'serializable_classes' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Cache Stores
     |--------------------------------------------------------------------------
     |
