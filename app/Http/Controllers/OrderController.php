@@ -2,53 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function store(StoreOrderRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-
-        // items comes from JSON body already decoded
-        $items = is_string($data['items']) ? json_decode($data['items'], true) : $data['items'];
-
-        $order = Order::create([
-            'customer_name' => $data['customer_name'],
-            'customer_phone' => $data['customer_phone'],
-            'items' => $items,
-            'total' => $data['total'],
-            'notes' => $data['notes'] ?? null,
-            'status' => 'pending',
-            'whatsapp_sent' => false,
+        $validated = $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_phone' => 'required|string|max:20',
+            'notes' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'total' => 'required|numeric',
         ]);
 
-        $itemsFormatted = '';
-        foreach ($items as $item) {
-            $itemName = $item['name'] ?? $item['product_name'] ?? 'Item';
-            $itemQty = $item['quantity'] ?? 1;
-            $itemPrice = $item['price'] ?? 0;
-            $itemsFormatted .= $itemName . ' (x' . $itemQty . ') - R$ ' . number_format((float) $itemPrice, 2, ',', '.') . '%0a';
-        }
+        return DB::transaction(function () use ($validated) {
+            $calculatedTotal = 0;
+            $finalItems = [];
 
-        $message = '*Novo Pedido*%0a%0a';
-        $message .= '*Cliente:* ' . $data['customer_name'] . '%0a';
-        $message .= '*Telefone:* ' . $data['customer_phone'] . '%0a%0a';
-        $message .= '*Itens:*%0a' . $itemsFormatted . '%0a';
-        $message .= '*Total:* R$ ' . number_format((float) $data['total'], 2, ',', '.') . '%0a';
+            foreach ($validated['items'] as $item) {
+                $product = Product::findOrFail($item['id']);
 
-        if (!empty($data['notes'])) {
-            $message .= '*Observações:* ' . $data['notes'];
-        }
+                $price = $product->promotional_price ?? $product->price;
+                $subtotal = $price * $item['quantity'];
+                $calculatedTotal += $subtotal;
 
-        $adminWhatsApp = env('ADMIN_WHATSAPP');
-        $whatsappLink = 'https://wa.me/' . $adminWhatsApp . '?text=' . $message;
+                $finalItems[] = [
+                    'name' => $product->name,
+                    'price' => $price,
+                    'quantity' => $item['quantity'],
+                    'subtotal' => $subtotal,
+                ];
+            }
 
-        return response()->json([
-            'success' => true,
-            'order_id' => $order->id,
-            'whatsapp_link' => $whatsappLink,
-        ]);
+            $order = Order::create([
+                'customer_name' => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'],
+                'notes' => $validated['notes'],
+                'items' => $finalItems,
+                'total' => $calculatedTotal,
+                'status' => 'pending',
+                'user_id' => Auth::id(),
+            ]);
+
+            $whatsappMessage = "Olá! Gostaria de fazer um pedido:\n\n";
+            foreach ($finalItems as $item) {
+                $whatsappMessage .= "- {$item['quantity']}x {$item['name']} (R$ ".number_format($item['price'], 2, ',', '.').")\n";
+            }
+            $whatsappMessage .= "\nTotal: R$ ".number_format($calculatedTotal, 2, ',', '.');
+            $whatsappMessage .= "\n\nNome: {$order->customer_name}\nTelefone: {$order->customer_phone}";
+
+            $whatsappLink = 'https://wa.me/'.preg_replace('/\D/', '', $order->customer_phone).'?text='.urlencode($whatsappMessage);
+
+            return response()->json([
+                'order_id' => $order->id,
+                'whatsapp_link' => $whatsappLink,
+            ]);
+        });
     }
 }

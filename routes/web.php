@@ -1,29 +1,31 @@
 <?php
 
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
-// Public routes
 Route::get('/', [MenuController::class, 'index'])->name('menu');
-
-// Order submission (public)
+Route::get('/cart', function () { return Inertia::render('customer/Cart'); })->name('cart');
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 
-// Admin routes
-Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth'])->group(function () {
+    Route::get('/my-orders', [CustomerOrderController::class, 'index'])->name('customer.orders');
+    Route::resource('addresses', AddressController::class)->only(['store', 'update', 'destroy']);
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
-    Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::resource('orders', AdminOrderController::class);
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
-require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+require __DIR__.'/settings.php';

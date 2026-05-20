@@ -18,9 +18,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('settings/profile', [
+        return Inertia::render('customer/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'addresses' => $request->user()->addresses()->orderBy('is_default', 'desc')->get(),
+            'defaultAddress' => $request->user()->defaultAddress,
         ]);
     }
 

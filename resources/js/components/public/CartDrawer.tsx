@@ -223,62 +223,61 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                                 ))}
                             </div>
 
-                            <div className="p-6 border-t bg-background space-y-6">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-lg font-medium">Total do Pedido</span>
-                                    <span className="text-2xl font-bold text-primary">
-                                        {formatPrice(totalPrice())}
-                                    </span>
+                                <div className="p-6 border-t bg-background space-y-6 pb-10">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-lg font-medium">Total do Pedido</span>
+                                        <span className="text-2xl font-bold text-primary">
+                                            {formatPrice(totalPrice())}
+                                        </span>
+                                    </div>
+                                    <div className="space-y-5">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="customerName" className="text-sm font-semibold">Nome Completo</Label>
+                                            <Input
+                                                id="customerName"
+                                                placeholder="Digite seu nome"
+                                                value={customerName}
+                                                onChange={(e) => setCustomerName(e.target.value)}
+                                                className="h-12 text-base"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="customerPhone" className="text-sm font-semibold">Telefone / WhatsApp</Label>
+                                            <Input
+                                                id="customerPhone"
+                                                placeholder="(00) 00000-0000"
+                                                value={customerPhone}
+                                                onChange={(e) => setCustomerPhone(e.target.value)}
+                                                type="tel"
+                                                className="h-12 text-base"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="notes" className="text-sm font-semibold">Observações</Label>
+                                            <Textarea
+                                                id="notes"
+                                                placeholder="Ex: Sem cebola, ponto da massa..."
+                                                value={notes}
+                                                onChange={(e) => setNotes(e.target.value)}
+                                                rows={2}
+                                                className="text-base"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Button
+                                        onClick={handleSubmit}
+                                        disabled={isSubmitting}
+                                        className="w-full h-14 text-lg font-bold shadow-lg"
+                                        size="lg"
+                                    >
+                                        {isSubmitting ? 'Enviando...' : 'Finalizar Pedido'}
+                                    </Button>
                                 </div>
+                            </>
+                        )}
+                    </div>
+                </SheetContent>
 
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="customerName">Nome Completo</Label>
-                                        <Input
-                                            id="customerName"
-                                            placeholder="Digite seu nome"
-                                            value={customerName}
-                                            onChange={(e) => setCustomerName(e.target.value)}
-                                            className="h-12 text-base"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="customerPhone">Telefone / WhatsApp</Label>
-                                        <Input
-                                            id="customerPhone"
-                                            placeholder="(00) 00000-0000"
-                                            value={customerPhone}
-                                            onChange={(e) => setCustomerPhone(e.target.value)}
-                                            type="tel"
-                                            className="h-12 text-base"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="notes">Observações</Label>
-                                        <Textarea
-                                            id="notes"
-                                            placeholder="Ex: Sem cebola, ponto da massa..."
-                                            value={notes}
-                                            onChange={(e) => setNotes(e.target.value)}
-                                            rows={2}
-                                            className="text-base"
-                                        />
-                                    </div>
-                                </div>
-
-                                <Button
-                                    onClick={handleSubmit}
-                                    disabled={isSubmitting}
-                                    className="w-full h-14 text-lg font-bold"
-                                    size="lg"
-                                >
-                                    {isSubmitting ? 'Enviando...' : 'Finalizar Pedido'}
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </SheetContent>
         </Sheet>
     );
 }

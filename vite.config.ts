@@ -24,7 +24,7 @@ export default defineConfig({
     },
     server: {
         cors: {
-            origin: ['http://localhost:8000', 'http://127.0.0.1:8000', 'http://localhost:5173', 'http://192.168.18.8:5173'],
+            origin: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
             credentials: true,

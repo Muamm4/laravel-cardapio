@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'customer_name',
         'customer_phone',
@@ -13,25 +17,30 @@ class Order extends Model
         'total',
         'status',
         'whatsapp_sent',
-        'notes',
+        'user_id',
+        'address_id',
     ];
 
-    protected $appends = [
-        'formatted_total',
+    protected $casts = [
+        'items' => 'array',
+        'total' => 'float',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'items' => 'array',
-            'total' => 'float',
-            'whatsapp_sent' => 'boolean',
-        ];
-    }
+    protected $appends = ['formatted_total'];
 
     public function getFormattedTotalAttribute(): string
     {
-        return 'R$ ' . number_format($this->total, 2, ',', '.');
+        return 'R$ '.number_format($this->total, 2, ',', '.');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class);
     }
 
     public function scopeRecent($query)
