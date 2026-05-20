@@ -184,14 +184,7 @@ export default function OrderShow({ order }: OrderShowProps) {
                 </Card>
 
                 {order.status === 'pending' && (
-                    <div className="flex items-center gap-4">
-                        <Button
-                            onClick={() => updateStatus('accepted')}
-                            className="gap-2 bg-green-600 hover:bg-green-700"
-                        >
-                            <Check className="size-4" />
-                            Aceitar Pedido
-                        </Button>
+                    <div className="flex justify-end items-center gap-4 mt-8">
                         <Button
                             onClick={() => updateStatus('rejected')}
                             variant="destructive"
@@ -199,6 +192,13 @@ export default function OrderShow({ order }: OrderShowProps) {
                         >
                             <X className="size-4" />
                             Recusar Pedido
+                        </Button>
+                        <Button
+                            onClick={() => updateStatus('accepted')}
+                            className="gap-2 bg-green-600 hover:bg-green-700"
+                        >
+                            <Check className="size-4" />
+                            Aceitar Pedido
                         </Button>
                     </div>
                 )}

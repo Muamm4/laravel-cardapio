@@ -1,9 +1,10 @@
 import { type BreadcrumbItem, type Order } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { Clock, ListOrdered, Package, ShoppingBag } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { Clock, ListOrdered, Package, ShoppingBag, Check, X } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface DashboardProps {
@@ -72,6 +73,12 @@ export default function Dashboard({
     pendingOrders,
     recentOrders,
 }: DashboardProps) {
+    const updateStatus = (id: number, status: 'accepted' | 'rejected') => {
+        router.patch(route('admin.orders.update-status', id), {
+            status,
+        });
+    };
+
     const stats = [
         {
             label: 'Total de Categorias',
@@ -178,14 +185,38 @@ export default function Dashboard({
                                                 <td className="py-3 font-medium">
                                                     {formatPrice(order.total)}
                                                 </td>
-                                                <td className="py-3">
-                                                    <Link
-                                                        href={route('admin.orders.show', order.id)}
-                                                        className="text-sm text-primary hover:underline"
-                                                    >
-                                                        Ver
-                                                    </Link>
-                                                </td>
+                                             <td className="py-3">
+                                                 <div className="flex items-center gap-2">
+                                                     <Link
+                                                         href={route('admin.orders.show', order.id)}
+                                                         className="text-sm text-primary hover:underline"
+                                                     >
+                                                         Ver
+                                                     </Link>
+                                                     {order.status === 'pending' && (
+                                                         <div className="flex items-center gap-1 ml-2 border-l pl-2">
+                                                             <Button
+                                                                 size="icon"
+                                                                 variant="ghost"
+                                                                 className="size-7 h-7 w-7 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                                                 onClick={() => updateStatus(order.id, 'accepted')}
+                                                                 title="Aceitar Pedido"
+                                                             >
+                                                                 <Check className="size-3.5" />
+                                                             </Button>
+                                                             <Button
+                                                                 size="icon"
+                                                                 variant="ghost"
+                                                                 className="size-7 h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                                 onClick={() => updateStatus(order.id, 'rejected')}
+                                                                 title="Recusar Pedido"
+                                                             >
+                                                                 <X className="size-3.5" />
+                                                             </Button>
+                                                         </div>
+                                                     )}
+                                                 </div>
+                                             </td>
                                             </tr>
                                         ))}
                                     </tbody>
