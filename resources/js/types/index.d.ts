@@ -37,7 +37,81 @@ export interface User {
     email: string;
     avatar?: string;
     email_verified_at: string | null;
+    is_admin?: boolean;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown;
+}
+
+export interface Category {
+    id: number;
+    name: string;
+    slug: string;
+    description: string | null;
+    image: string | null;
+    is_active: boolean;
+    sort_order: number;
+    products: Product[];
+    products_count?: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface Product {
+    id: number;
+    category_id: number;
+    name: string;
+    description: string | null;
+    price: number;
+    promotional_price: number | null;
+    formatted_price?: string;
+    formatted_promotional_price?: string;
+    has_promotion?: boolean;
+    image: string | null;
+    is_active: boolean;
+    sort_order: number;
+    category?: Category;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface CartItem {
+    id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    image: string | null;
+}
+
+export interface Order {
+    id: number;
+    customer_name: string;
+    customer_phone: string;
+    items: CartItem[];
+    total: number;
+    formatted_total?: string;
+    status: 'pending' | 'accepted' | 'rejected';
+    whatsapp_sent: boolean;
+    notes: string | null;
+    created_at: string;
+    updated_at?: string;
+}
+
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface PaginationMeta {
+    current_page: number;
+    last_page: number;
+    total: number;
+    per_page: number;
+}
+
+export interface PaginatedResponse<T> {
+    data: T[];
+    links: PaginationLink[];
+    meta: PaginationMeta;
 }
