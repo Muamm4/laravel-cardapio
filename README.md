@@ -34,6 +34,7 @@ O sistema oferece uma experiência fluida para o cliente final (Mobile-First) e 
 | ![Produtos](./screenshots/admin-products.png) | ![Pedido](./screenshots/admin-order-detail.png) | ![Checkout](./screenshots/checkout-flow.png) |
 
 ---
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
