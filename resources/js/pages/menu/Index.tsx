@@ -65,11 +65,10 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
                         <button
                             key={category.id}
                             onClick={() => scrollToCategory(category.slug)}
-                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                                activeCategory === category.slug 
-                                ? 'bg-primary text-primary-foreground shadow-sm' 
-                                : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                            }`}
+                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeCategory === category.slug
+                                    ? 'bg-primary text-primary-foreground shadow-sm'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                }`}
                         >
                             {category.name}
                         </button>
@@ -82,7 +81,7 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
                             <section key={category.id} id={category.slug} >
                                 <h2 className="text-2xl font-semibold mb-8 border-b pb-2">{category.name}</h2>
                                 {category.description && <p className="text-muted-foreground mb-8">{category.description}</p>}
-                                
+
                                 <div className="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                                     {category.products.map((product) => (
                                         <ProductCard key={product.id} product={product} />
@@ -90,6 +89,9 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
                                 </div>
                             </section>
                         ))}
+                        <div className="h-24 flex justify-center">
+                            <span className="text-muted-foreground text-sm">Isso é tudo por hoje!</span>
+                        </div>
                     </div>
                 </main>
 
