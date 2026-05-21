@@ -14,12 +14,14 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
     const [activeCategory, setActiveCategory] = useState('');
 
     useEffect(() => {
+        const mainElement = document.querySelector('main');
         const handleScroll = () => {
-            const scrollPosition = window.scrollY;
+            if (!mainElement) return;
+            const scrollPosition = mainElement.scrollTop;
             for (const category of categories) {
                 const element = document.getElementById(category.slug);
                 if (element) {
-                    const { offsetTop, offsetHeight } = element;
+                    const offsetTop = element.offsetTop;
                     if (scrollPosition >= offsetTop - 100) {
                         setActiveCategory(category.slug);
                     }
@@ -27,20 +29,19 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        mainElement?.addEventListener('scroll', handleScroll);
+        return () => mainElement?.removeEventListener('scroll', handleScroll);
     }, [categories]);
 
     const scrollToCategory = (slug: string) => {
         const element = document.getElementById(slug);
-        if (element) {
+        const mainElement = document.querySelector('main');
+        if (element && mainElement) {
             const offset = 100;
-            const bodyRect = document.body.getBoundingClientRect().top;
-            const elementRect = element.getBoundingClientRect().top;
-            const elementPosition = elementRect - bodyRect;
+            const elementPosition = element.offsetTop;
             const offsetPosition = elementPosition - offset;
 
-            window.scrollTo({
+            mainElement.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
             });
@@ -50,7 +51,7 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
     return (
         <ToastProvider>
             <Head title="Cardápio" />
-            <div className="min-h-screen bg-background">
+            <div className="h-screen bg-background flex flex-col overflow-hidden">
                 <header className="bg-primary text-primary-foreground p-6 text-center relative pt-[calc(var(--safe-top)+1.5rem)]">
                     <h1 className="text-3xl font-bold">Cardápio</h1>
                     <p className="mt-2 opacity-90">Escolha seus produtos favoritos</p>
@@ -59,7 +60,7 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
                     </div>
                 </header>
 
-                <nav className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b overflow-x-auto no-scrollbar py-3 px-4 flex gap-2">
+                <nav className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b py-3 px-4 flex flex-wrap justify-center gap-2">
                     {categories.map((category) => (
                         <button
                             key={category.id}
@@ -75,19 +76,21 @@ export default function MenuIndex({ categories }: MenuIndexProps) {
                     ))}
                 </nav>
 
-                <main className="container mx-auto px-4 py-8 space-y-12 pb-[calc(var(--safe-bottom)+6rem)]">
-                    {categories.map((category) => (
-                        <section key={category.id} id={category.slug} className="scroll-mt-24">
-                            <h2 className="text-2xl font-semibold mb-8 border-b pb-2">{category.name}</h2>
-                            {category.description && <p className="text-muted-foreground mb-8">{category.description}</p>}
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {category.products.map((product) => (
-                                    <ProductCard key={product.id} product={product} />
-                                ))}
-                            </div>
-                        </section>
-                    ))}
+                <main className="container mx-auto px-4 py-8 space-y-12 pb-[calc(var(--safe-bottom)+6rem)] overflow-y-auto flex-1 pwa-keyboard-avoid">
+                    <div className="h-full">
+                        {categories.map((category) => (
+                            <section key={category.id} id={category.slug} >
+                                <h2 className="text-2xl font-semibold mb-8 border-b pb-2">{category.name}</h2>
+                                {category.description && <p className="text-muted-foreground mb-8">{category.description}</p>}
+                                
+                                <div className="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                                    {category.products.map((product) => (
+                                        <ProductCard key={product.id} product={product} />
+                                    ))}
+                                </div>
+                            </section>
+                        ))}
+                    </div>
                 </main>
 
                 <BottomNav />

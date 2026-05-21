@@ -8,8 +8,8 @@
         <link rel="manifest" href="/manifest.json">
         <meta name="theme-color" content="#ef4444">
         <link rel="apple-touch-icon" href="/icons/icon-128x128.png">
-        <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="mobile-web-app-capable" content="yes">
 
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>
@@ -25,19 +25,6 @@
             }
         })();
     </script>
-
-    {{-- Inline style to set the HTML background color based on our theme in app.css --}}
-        <style>
-            html {
-                background-color: #ffffff;
-                --safe-top: env(safe-area-inset-top, 0px);
-                --safe-bottom: env(safe-area-inset-bottom, 0px);
-            }
-
-            html.dark {
-                background-color: #0f172a;
-            }
-        </style>
 
     <title data-inertia>{{ config('app.name', 'Cardapio') }}</title>
 
@@ -86,6 +73,4 @@
             });
         </script>
     </body>
-
-
 </html>

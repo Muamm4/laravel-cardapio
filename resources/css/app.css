@@ -68,6 +68,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
     *,
     ::after,
     ::before,
@@ -156,4 +157,21 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+
+html {
+    background-color: #ffffff;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html.dark {
+    background-color: #0f172a;
+}
+
+.pwa-keyboard-avoid {
+    /* Usa a API nativa se disponível; caso contrário, usa a variável calculada pelo JS */
+    padding-bottom: env(keyboard-inset-height, var(--altura-teclado, 0px));
+    transition: padding-bottom 0.1s ease-out;
 }

@@ -28,11 +28,14 @@ function getStatusBadge(status: Order['status']) {
 
 export default function Orders({ orders }: OrdersProps) {
     return (
-        <div className="min-h-screen bg-background pb-24">
-            <BottomNav />
+        <div className="h-screen bg-background flex flex-col overflow-hidden">
             <Head title="Meus Pedidos" />
+            <header className="bg-primary text-primary-foreground p-6 text-center relative pt-[calc(var(--safe-top)+1.5rem)]">
+                    <h1 className="text-3xl font-bold"></h1>
+                    <p className="mt-2 opacity-90"></p>
+            </header>
 
-            <main className="container mx-auto px-4 py-8 pt-[calc(env(safe-area-inset-top)+1rem)]">
+            <main className="container mx-auto px-4 py-8 pt-[calc(env(safe-area-inset-top)+1rem)] overflow-y-auto flex-1 pwa-keyboard-avoid">
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold tracking-tight">Meus Pedidos</h1>
                     <p className="text-muted-foreground">Acompanhe o status dos seus pedidos</p>
@@ -56,7 +59,7 @@ export default function Orders({ orders }: OrdersProps) {
                                     <CardHeader className="flex flex-row items-center justify-between p-4 bg-muted/30">
                                         <div className="flex items-center gap-2">
                                             <span className="text-sm font-bold">Pedido #{order.id}</span>
-                                            <Badge variant={status.variant} className="text-[10px] px-2 py-0">
+                                            <Badge variant={status.variant as any} className="text-[10px] px-2 py-0">
                                                 {status.label}
                                             </Badge>
                                         </div>
@@ -84,6 +87,8 @@ export default function Orders({ orders }: OrdersProps) {
                     </div>
                 )}
             </main>
+
+            <BottomNav />
         </div>
     );
 }

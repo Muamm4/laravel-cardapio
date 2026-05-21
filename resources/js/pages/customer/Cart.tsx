@@ -97,11 +97,14 @@ export default function Cart() {
     }
 
     return (
-        <div className="min-h-screen bg-background pb-24">
-            <BottomNav />
+        <div className="h-screen bg-background flex flex-col overflow-hidden">
             <Head title="Carrinho" />
+            <header className="bg-primary text-primary-foreground p-6 text-center relative pt-[calc(var(--safe-top)+1.5rem)]">
+                    <h1 className="text-3xl font-bold"></h1>
+                    <p className="mt-2 opacity-90"></p>
+            </header>
 
-            <main className="container mx-auto px-4 py-8 pt-[calc(var(--safe-top)+1rem)]">
+            <main className="container mx-auto px-4 py-8 pt-[calc(var(--safe-top)+1rem)] overflow-y-auto flex-1 pwa-keyboard-avoid">
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold tracking-tight">Seu Carrinho</h1>
                     <p className="text-muted-foreground">{items.length} item(ns) adicionados</p>
@@ -224,6 +227,8 @@ export default function Cart() {
                     </div>
                 )}
             </main>
+
+            <BottomNav />
         </div>
     );
 }

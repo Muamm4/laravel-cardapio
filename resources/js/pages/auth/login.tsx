@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { BottomNav } from '@/components/public/BottomNav';
 
 type LoginForm = {
     email: string;
@@ -105,6 +106,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             </form>
 
             {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            <BottomNav />
         </AuthLayout>
     );
 }

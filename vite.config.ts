@@ -32,7 +32,7 @@ export default defineConfig({
             maxAge: 86400,
         },
         hmr: {
-            host: 'localhost',
+            host: '192.168.1.8',
             protocol: 'ws',
             clientPort: 5173,
             port: 5173,

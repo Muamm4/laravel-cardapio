@@ -19,8 +19,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     };
 
     return (
-        <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
-            <div className="aspect-video bg-muted relative">
+        <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-row">
+            <div className="aspect-video bg-muted relative max-h-36 max-w-36">
                 {product.image ? (
                     <img
                         src={`/storage/${product.image}`}
@@ -28,7 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground max-h-48 max-w-48">
                         Sem imagem
                     </div>
                 )}

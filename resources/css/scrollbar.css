@@ -1,0 +1,42 @@
+/* ==========================================================================
+   Configuração da Scrollbar Ultra-Discreta e Transparente
+   ========================================================================== */
+
+/* Navegadores baseados em Webkit (Chrome, Safari, Edge, Opera) */
+
+/* Força a destruição visual e dimensional das setas */
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:single-button,
+::-webkit-scrollbar-button:start,
+::-webkit-scrollbar-button:end,
+::-webkit-scrollbar-button:vertical:start:decrement,
+::-webkit-scrollbar-button:vertical:end:increment,
+::-webkit-scrollbar-button:horizontal:start:decrement,
+::-webkit-scrollbar-button:horizontal:end:increment {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+
+/* Pista por onde o indicador desliza (Totalmente transparente) */
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+/* O indicador de rolagem (Completamente transparente) */
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 10px;
+}
+
+/* Efeito de hover (Mantém transparente) */
+::-webkit-scrollbar-thumb:hover {
+    background-color: transparent;
+}
+
+/* Suporte para Firefox (Scrollbar transparente) */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
