@@ -1,25 +1,28 @@
-# 🍕 Cardápio Digital Whitelabel
+# 🍕 Cardápio Digital Whitelabel (Premium Edition)
 
-Um sistema moderno de cardápio online e gestão de pedidos via WhatsApp, desenvolvido com uma arquitetura escalável e design focado em conversão. Este projeto foi concebido como um **Whitelabel**, permitindo que seja facilmente adaptado para qualquer restaurante, pizzaria ou lanchonete.
+Um sistema de alta performance para cardápios online e gestão de pedidos via WhatsApp, desenvolvido com foco total em conversão e experiência do usuário mobile. Este projeto é um **Whitelabel**, permitindo a adaptação rápida para qualquer restaurante, pizzaria ou lanchonete.
 
 ## 🚀 Visão Geral
 
-O sistema oferece uma experiência fluida para o cliente final (Mobile-First) e um painel administrativo robusto para o lojista gerenciar seu negócio em tempo real.
+O sistema une a robustez de um painel administrativo completo com a fluidez de um aplicativo nativo para o cliente final, utilizando a tecnologia de **PWA (Progressive Web App)** e suporte a **NativePHP Mobile**.
 
 ### 🌟 Principais Funcionalidades
 
-#### 📱 Para o Cliente (Frontend)
-- **Cardápio Digital**: Navegação intuitiva por categorias de produtos.
-- **Experiência Mobile-First**: Interface otimizada para smartphones, simulando a experiência de um app nativo.
-- **Carrinho Inteligente**: Adição rápida de itens, ajuste de quantidades e persistência de dados.
-- **Checkout via WhatsApp**: Geração automática de mensagem estruturada com todos os itens, quantidades e total, enviada diretamente para o WhatsApp do restaurante.
-- **Suporte a Promoções**: Destaque visual para produtos em oferta.
+#### 📱 Para o Cliente (Experiência App-Like)
+- **PWA (Progressive Web App)**: O cardápio pode ser instalado diretamente no celular do cliente, funcionando como um app sem a necessidade de baixar da App Store/Play Store.
+- **Navegação Mobile-First**: Interface otimizada com **Bottom Navigation** (barra inferior), respeitando as *Safe Areas* de dispositivos modernos (notch e barras de gestos).
+- **Sistema de Contas**: Cadastro de usuários para salvar dados de perfil e histórico de pedidos.
+- **Gestão de Endereços**: Suporte a múltiplos endereços salvos por usuário, com definição de endereço padrão para agilizar o checkout.
+- **Carrinho Inteligente**: Persistência de itens, cálculo automático de totais e interface fluida.
+- **Checkout via WhatsApp**: Geração de pedidos estruturados enviados diretamente para o WhatsApp do restaurante.
+- **Suporte a Promoções**: Destaque visual para produtos em oferta com preços riscados e badges.
 
-#### 🛠️ Para o Administrador (Painel Admin)
-- **Gestão de Categorias**: CRUD completo de categorias com controle de ordem de exibição e status de ativação.
-- **Gestão de Produtos**: Controle total de produtos, incluindo upload de imagens, preços, preços promocionais e descrições.
-- **Gestão de Pedidos**: Visualização de todos os pedidos recebidos, com a possibilidade de aceitar ou recusar, mantendo o histórico de vendas.
-- **Dashboard de Métricas**: Visão geral rápida do volume de categorias, produtos e pedidos.
+#### 🛠️ Para o Administrador (Painel de Gestão)
+- **Dashboard de Métricas**: Visão geral de pedidos, produtos e categorias.
+- **Gestão de Categorias**: CRUD completo com controle de ordem de exibição e status.
+- **Gestão de Produtos**: Controle de estoque, upload de imagens, preços promocionais e descrições.
+- **Gestão de Pedidos**: Fluxo de aceitação/recusa de pedidos com visualização detalhada dos itens e dados do cliente.
+- **Ações Rápidas**: Aprovação ou recusa de pedidos diretamente pelo Dashboard.
 
 ---
 
@@ -34,18 +37,18 @@ O sistema oferece uma experiência fluida para o cliente final (Mobile-First) e 
 | ![Produtos](./screenshots/admin-products.png) | ![Pedido](./screenshots/admin-order-detail.png) | ![Checkout](./screenshots/checkout-flow.png) |
 
 ---
----
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Stack Tecnológica
 
-O projeto utiliza o que há de mais moderno no ecossistema PHP e JavaScript:
+O projeto utiliza o estado da arte do ecossistema PHP e JavaScript:
 
 - **Backend**: [Laravel 13](https://laravel.com) (Framework PHP)
-- **Frontend**: [React](https://react.dev) com [Inertia.js](https://inertiajs.com) (Single Page App experience)
+- **Frontend**: [React](https://react.dev) com [Inertia.js](https://inertiajs.com) (SPA Experience)
 - **Estilização**: [Tailwind CSS](https://tailwindcss.com) + [Shadcn UI](https://ui.shadcn.com)
-- **Estado**: [Zustand](https://zustand-demo.pmnd.rs/) (Gerenciamento de estado leve e rápido)
+- **Estado**: [Zustand](https://zustand-demo.pmnd.rs/) (Gerenciamento de estado leve)
 - **Banco de Dados**: SQLite (Simplicidade e portabilidade)
-- **Ícones**: [Lucide React](https://lucide.dev)
+- **Performance**: [Laravel Octane](https://laravel.com/docs/octane) com [FrankenPHP](https://frankenphp.dev) (Respostas em milissegundos)
+- **Distribuição**: PWA (Web App Instalável) & [NativePHP](https://nativephp.com) (App Nativo)
 
 ---
 
@@ -63,9 +66,10 @@ O projeto utiliza o que há de mais moderno no ecossistema PHP e JavaScript:
    cd laravel-cardapio
    ```
 
-2. **Instalar dependências do PHP**
+2. **Instalar dependências**
    ```bash
    composer install
+   npm install
    ```
 
 3. **Configurar ambiente**
@@ -74,36 +78,32 @@ O projeto utiliza o que há de mais moderno no ecossistema PHP e JavaScript:
    php artisan key:generate
    ```
 
-4. **Configurar Banco de Dados**
-   - O projeto utiliza SQLite por padrão. Certifique-se de que o arquivo `database/database.sqlite` existe ou execute:
+4. **Banco de Dados**
    ```bash
    touch database/database.sqlite
-   ```
-
-5. **Executar Migrações e Seeders**
-   ```bash
    php artisan migrate --seed
    ```
 
-6. **Instalar dependências do Frontend**
+5. **Assets e Storage**
    ```bash
-   npm install
-   npm run dev
+   npm run build
+   php artisan storage:link
    ```
 
-7. **Link de Storage**
+6. **Execução (Modo Performance)**
    ```bash
-   php artisan storage:link
+   php artisan octane:start --host=0.0.0.0 --port=8000
    ```
 
 ---
 
 ## 🎯 Customização (Whitelabel)
 
-Para adaptar este sistema para um novo cliente, basta:
-1. Alterar as cores primárias no arquivo `tailwind.config.js`.
-2. Atualizar a logo no componente `AppLogo.tsx`.
-3. Configurar o número do WhatsApp do administrador no arquivo `.env` (`ADMIN_WHATSAPP`).
+Para adaptar este sistema para um novo cliente:
+1. **Cores**: Altere as cores primárias no `tailwind.config.js`.
+2. **Identidade**: Atualize a logo no componente `AppLogo.tsx`.
+3. **WhatsApp**: Configure o número do administrador no `.env` (`ADMIN_WHATSAPP`).
+4. **PWA**: Atualize o `manifest.json` e os ícones em `public/icons/` para a marca do cliente.
 
 ---
 
